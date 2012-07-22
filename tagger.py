@@ -1,4 +1,4 @@
-#/usr/bin/python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 import os, sys
 import mutagen.id3
@@ -46,7 +46,6 @@ def write_tags(filename, tags):
             f = FLAC(filename)
         for t in TAGS:
             f[t] = unicode(tags[t])
-        print f
         f.save()
     except:
         pass
@@ -60,7 +59,7 @@ def write_tags(filename, tags):
 
 
 def main(argv):
-    directory = argv[1]
+    directory = unicode(argv[1], encoding='utf8', errors='replace')
     dirname = directory.split(os.sep)[-1]
     if not dirname:           # it happens if you give directory with os.sep
         dirname = directory.split(os.sep)[-2]
@@ -91,6 +90,7 @@ def main(argv):
         clear_tags(directory + os.sep + f)
     # fill them with right info
     #tagnames = FORMAT.replace('(', ' ').replace(')', ' ').replace('/', ' ').replace('-', ' ').split()
+    print filenames
     for f in filenames:
         print 'Writing tags for ', directory + os.sep + f
         try:
@@ -110,7 +110,7 @@ def main(argv):
             tags['genre'] = genre
             # write tags
             write_tags(directory + os.sep + f, tags)
-        except:
+        except OSError:
             print 'Error for %s, now it has empty tags' % f
 
 
